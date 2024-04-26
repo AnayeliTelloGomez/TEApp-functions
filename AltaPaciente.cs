@@ -22,6 +22,7 @@ namespace TEAPP
             public string nombres;
             public string paterno;
             public string materno;
+            public string tipo;
         }
 
         class ParamAltaPaciente{
@@ -81,17 +82,27 @@ namespace TEAPP
                     var cmdAltaPaciente = new MySqlCommand();
                     cmdAltaPaciente.Connection=conexion;
                     cmdAltaPaciente.Transaction=transaccion;
-                    cmdAltaPaciente.CommandText="insert into paciente (idpaciente,correo,contrasena,nombres,paterno,materno) values (0,@correo,@contrasena,@nombres,@paterno,@materno)";
-                    cmdAltaPaciente.Parameters.AddWithValue("@correo",paciente.correo);
-                    cmdAltaPaciente.Parameters.AddWithValue("@contrasena",hashedPassword);
-                    cmdAltaPaciente.Parameters.AddWithValue("@nombres",paciente.nombres);
-                    cmdAltaPaciente.Parameters.AddWithValue("@paterno",paciente.paterno);
-                    cmdAltaPaciente.Parameters.AddWithValue("@materno",paciente.materno);
+                    if(paciente.tipo.Equals("2")){
+                        cmdAltaPaciente.CommandText="insert into paciente (idpaciente,correo,contrasena,nombres,paterno,materno) values (0,@correo,@contrasena,@nombres,@paterno,@materno)";
+                        cmdAltaPaciente.Parameters.AddWithValue("@correo",paciente.correo);
+                        cmdAltaPaciente.Parameters.AddWithValue("@contrasena",hashedPassword);
+                        cmdAltaPaciente.Parameters.AddWithValue("@nombres",paciente.nombres);
+                        cmdAltaPaciente.Parameters.AddWithValue("@paterno",paciente.paterno);
+                        cmdAltaPaciente.Parameters.AddWithValue("@materno",paciente.materno);
+                    }else{
+                        cmdAltaPaciente.CommandText="insert into especialista (idespecialista,correo,contrasena,nombres,paterno,materno,idadministrador) values (0,@correo,@contrasena,@nombres,@paterno,@materno, 1)";
+                        cmdAltaPaciente.Parameters.AddWithValue("@correo",paciente.correo);
+                        cmdAltaPaciente.Parameters.AddWithValue("@contrasena",hashedPassword);
+                        cmdAltaPaciente.Parameters.AddWithValue("@nombres",paciente.nombres);
+                        cmdAltaPaciente.Parameters.AddWithValue("@paterno",paciente.paterno);
+                        cmdAltaPaciente.Parameters.AddWithValue("@materno",paciente.materno);
+                    }
+                    
                     //executar Query (non porque no devuelve datos)
                     cmdAltaPaciente.ExecuteNonQuery();
 
                     transaccion.Commit();
-                    return new OkObjectResult("Paciente registrado correctamente");
+                    return new OkObjectResult("Usuario registrado correctamente.");
 
                 }catch(Exception e){
                     transaccion.Rollback();
