@@ -7,26 +7,24 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+
 using MySql.Data.MySqlClient;
 
 namespace TEAPP
 {
-    public static class validarEspecialista
+    public static class eliminarEspecialista
     {
-        [FunctionName("validarEspecialista")]
+        [FunctionName("eliminarEspecialista")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
 
             string correo = req.Query["correo"];
-            string idAdmin = req.Query["idAdmin"];
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
             correo = correo ?? data?.correo;
-            idAdmin = idAdmin ?? data?.idAdmin;
 
             //leer los parametros para establecer conexión
             string Server = Environment.GetEnvironmentVariable("Server");
@@ -45,18 +43,17 @@ namespace TEAPP
                 //Crear la variable tipo comando en MySQL y asignarle sus caracteristicas
                 var cmdAltaPaciente = new MySqlCommand();
                 cmdAltaPaciente.Connection = conexion;
-                cmdAltaPaciente.CommandText = "UPDATE especialista SET idadministrador=@idAdmin where correo=@correo";
+                cmdAltaPaciente.CommandText = "delete from especialista where correo=@correo";
                 cmdAltaPaciente.Parameters.AddWithValue("@correo", correo);
-                cmdAltaPaciente.Parameters.AddWithValue("@idAdmin",int.Parse(idAdmin));
 
                 //executar Query (non porque no devuelve datos)
                 cmdAltaPaciente.ExecuteNonQuery();
 
-                return new OkObjectResult(new { message = "Usuario validado correctamente." });
+                return new OkObjectResult(new { message = "Usuario eliminado correctamente." });
 
             }catch (Exception e){
                 //throw new Exception(e.Message);
-                return new BadRequestObjectResult(JsonConvert.SerializeObject(new Error(e.Message)));
+                    return new BadRequestObjectResult(JsonConvert.SerializeObject(new Error(e.Message)));
             }finally{
                 conexion.Close();
             }
