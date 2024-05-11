@@ -15,35 +15,32 @@ using System.Text;
 
 namespace TEAPP
 {
-    public static class AltaPaciente
+
+    class Paciente{
+        public string correo;
+        public string contrasena;
+        public string nombres;
+        public string paterno;
+        public string materno;
+    }
+
+    class ParamAltaPaciente{
+        public Paciente paciente= new Paciente();
+    }
+
+    //clase para crear el error y su constructor
+    class Error{
+        public string mensaje;
+        public Error(string mensaje)
+        {
+            this.mensaje = mensaje;
+        }
+    }
+    public static class altaAdmin
     {
-        class Paciente
-        {
-            public string correo;
-            public string contrasena;
-            public string nombres;
-            public string paterno;
-            public string materno;
-            public string tipo;
-        }
-
-        class ParamAltaPaciente
-        {
-            public Paciente paciente= new Paciente();
-        }
-
-        //clase para crear el error y su constructor
-        class Error
-        {
-            public string mensaje;
-            public Error(string mensaje)
-            {
-                this.mensaje = mensaje;
-            }
-        }
-        [FunctionName("AltaPaciente")]
+        [FunctionName("altaAdmin")]
         public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
             try
@@ -89,24 +86,13 @@ namespace TEAPP
                     var cmdAltaPaciente = new MySqlCommand();
                     cmdAltaPaciente.Connection = conexion;
                     cmdAltaPaciente.Transaction = transaccion;
-                    if (paciente.tipo.Equals("2"))
-                    {
-                        cmdAltaPaciente.CommandText = "insert into paciente (idpaciente,correo,contrasena,nombres,paterno,materno,idespecialista) values (0,@correo,@contrasena,@nombres,@paterno,@materno,1)";
-                        cmdAltaPaciente.Parameters.AddWithValue("@correo", paciente.correo);
-                        cmdAltaPaciente.Parameters.AddWithValue("@contrasena", hashedPassword);
-                        cmdAltaPaciente.Parameters.AddWithValue("@nombres", paciente.nombres);
-                        cmdAltaPaciente.Parameters.AddWithValue("@paterno", paciente.paterno);
-                        cmdAltaPaciente.Parameters.AddWithValue("@materno", paciente.materno);
-                    }
-                    else
-                    {
-                        cmdAltaPaciente.CommandText = "insert into especialista (idespecialista,correo,contrasena,nombres,paterno,materno,idadministrador) values (0,@correo,@contrasena,@nombres,@paterno,@materno, 1)";
-                        cmdAltaPaciente.Parameters.AddWithValue("@correo", paciente.correo);
-                        cmdAltaPaciente.Parameters.AddWithValue("@contrasena", hashedPassword);
-                        cmdAltaPaciente.Parameters.AddWithValue("@nombres", paciente.nombres);
-                        cmdAltaPaciente.Parameters.AddWithValue("@paterno", paciente.paterno);
-                        cmdAltaPaciente.Parameters.AddWithValue("@materno", paciente.materno);
-                    }
+                    cmdAltaPaciente.CommandText = "insert into administrador (idadministrador,correo,contrasena,nombres,paterno,materno) values (0,@correo,@contrasena,@nombres,@paterno,@materno)";
+                    cmdAltaPaciente.Parameters.AddWithValue("@correo", paciente.correo);
+                    cmdAltaPaciente.Parameters.AddWithValue("@contrasena", hashedPassword);
+                    cmdAltaPaciente.Parameters.AddWithValue("@nombres", paciente.nombres);
+                    cmdAltaPaciente.Parameters.AddWithValue("@paterno", paciente.paterno);
+                    cmdAltaPaciente.Parameters.AddWithValue("@materno", paciente.materno);
+                   
 
                     //executar Query (non porque no devuelve datos)
                     cmdAltaPaciente.ExecuteNonQuery();
