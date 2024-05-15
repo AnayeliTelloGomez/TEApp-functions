@@ -147,7 +147,8 @@ namespace TEAPP
                 string issuer="TEApp";
                 string audience="localhost:4200";
                 int expiryMinutes=30;
-                string secretKey=Environment.GetEnvironmentVariable("salt");
+                //string secretKey=Environment.GetEnvironmentVariable("salt");
+                string secretKey = "holaholajhoadfl;afholaholajhoadfl;afholaholajhoadfl;af";
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var key = Encoding.ASCII.GetBytes(secretKey);
 
