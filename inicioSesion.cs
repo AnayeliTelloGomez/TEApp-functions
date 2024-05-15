@@ -74,7 +74,7 @@ namespace TEAPP
                 {
                     var cmdInicio = new MySqlCommand();
                     cmdInicio.Connection = conexion;
-                    cmdInicio.Transaction = transaccion;
+                    //cmdInicio.Transaction = transaccion;
                     object resultado = new object();
                     if (usuario.tipo.Equals("2")){
                         cmdInicio.CommandText = "select * from paciente where correo=@correo and contrasena=@contrasena";
@@ -89,7 +89,7 @@ namespace TEAPP
                         resultado = cmdInicio.ExecuteScalar();
                     }
                     if (resultado != null && Convert.ToInt32(resultado) > 0){
-                        transaccion.Commit();
+                        //transaccion.Commit();
                         //creacion del token
                         
                         /*var claims = new[]{
@@ -107,14 +107,13 @@ namespace TEAPP
                         );
 
                         return new JwtSecurityTokenHandler().WriteToken(token);*/
-
-                        return new OkObjectResult("Credenciales correctas");
+                        return new OkObjectResult(new { message=GenerateJwtToken(usuario.correo,usuario.tipo)});
                     }else{
-                        transaccion.Commit();
+                        //transaccion.Commit();
                         return new BadRequestObjectResult(JsonConvert.SerializeObject(new Error("Credenciales erroneas. correo"+usuario.correo+usuario.contrasena)));
                     }
                 }catch (Exception e){
-                    transaccion.Rollback();
+                    //transaccion.Rollback();
                     throw new Exception(e.Message);
                 }
                 finally{
@@ -122,25 +121,52 @@ namespace TEAPP
                 }
             }catch (Exception e){
                 Console.WriteLine(e.Message);
-                return new BadRequestObjectResult(JsonConvert.SerializeObject(new Error(e.Message)));
+                return new BadRequestObjectResult(JsonConvert.SerializeObject(new Error(e.Message +"error global")));
             }
                 
 
-                static string encode(string pass){
-                    string salt = Environment.GetEnvironmentVariable("salt");
-                    byte[] combinedBytes = Encoding.UTF8.GetBytes(pass + salt);
+            static string encode(string pass){
+                string salt = Environment.GetEnvironmentVariable("salt");
+                byte[] combinedBytes = Encoding.UTF8.GetBytes(pass + salt);
 
-                    // Calcular el hash con SHA-256
-                    byte[] hashBytes;
-                    using (SHA256 sha256 = SHA256.Create())
-                    {
-                        hashBytes = sha256.ComputeHash(combinedBytes);
-                    }
-
-                    // Convertir el hash a una cadena hexadecimal
-                    string hash = BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
-                    return hash;
+                // Calcular el hash con SHA-256
+                byte[] hashBytes;
+                using (SHA256 sha256 = SHA256.Create())
+                {
+                    hashBytes = sha256.ComputeHash(combinedBytes);
                 }
+
+                // Convertir el hash a una cadena hexadecimal
+                string hash = BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
+                return hash;
+            }
+
+            static string GenerateJwtToken(string correo, string role)
+            {
+                //cambiar a variables de entorno
+                string issuer="TEApp";
+                string audience="localhost:4200";
+                int expiryMinutes=30;
+                string secretKey=Environment.GetEnvironmentVariable("salt");
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var key = Encoding.ASCII.GetBytes(secretKey);
+
+                var tokenDescriptor = new SecurityTokenDescriptor
+                {
+                    Subject = new ClaimsIdentity(new Claim[]
+                    {
+                        new Claim("correo", correo),
+                        new Claim("role", role)
+                    }),
+                    Expires = DateTime.UtcNow.AddMinutes(expiryMinutes),
+                    Issuer = issuer,
+                    Audience = audience,
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                };
+
+                var token = tokenHandler.CreateToken(tokenDescriptor);
+                return tokenHandler.WriteToken(token);
+            }
         }
     }
 }
