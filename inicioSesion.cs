@@ -144,11 +144,11 @@ namespace TEAPP
             static string GenerateJwtToken(string correo, string role)
             {
                 //cambiar a variables de entorno
-                string issuer="TEApp";
-                string audience="localhost:4200";
+                string issuer=Environment.GetEnvironmentVariable("proveedor");
+                string audience=Environment.GetEnvironmentVariable("audiencia");
                 int expiryMinutes=30;
                 //string secretKey=Environment.GetEnvironmentVariable("salt");
-                string secretKey = "holaholajhoadfl;afholaholajhoadfl;afholaholajhoadfl;af";
+                string secretKey = Environment.GetEnvironmentVariable("secretKey");
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var key = Encoding.ASCII.GetBytes(secretKey);
 

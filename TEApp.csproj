@@ -6,7 +6,10 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.2.0"/>
     <PackageReference Include="MySql.Data" Version="8.4.0"/>
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.7.0"/>
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.10.0"/>
+    <PackageReference Include="DarkLoop.Azure.Functions.Authorization.InProcess" Version="4.0.1"/>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.0"/>
+    <PackageReference Include="System.Net.Mail" Version="1.0.0-rtm-00002"/>
     <FunctionsPreservedDependencies Include="System.Diagnostics.DiagnosticSource.dll"/>
   </ItemGroup>
   <ItemGroup>
