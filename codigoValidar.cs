@@ -13,6 +13,7 @@ using Org.BouncyCastle.Math.EC.Rfc7748;
 using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
 using System.Transactions;
+using MySql.Data.MySqlClient;
 
 namespace TEAPP
 {
@@ -27,8 +28,8 @@ namespace TEAPP
             log.LogInformation("C# HTTP trigger function processed a request.");
 
             string correo = req.Query["correo"];
-            string email="teapp.3sc0m@gmail.com";
-            string password="cbwoqdzsyppthngj";
+            string email=Environment.GetEnvironmentVariable("correo");
+            string password=Environment.GetEnvironmentVariable("passCorreo");
             string myAlias="TEApp";
             MailMessage mCorreo;
             mCorreo=new MailMessage();
@@ -100,12 +101,31 @@ namespace TEAPP
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
             correo = correo ?? data?.correo;
-
-            string responseMessage = string.IsNullOrEmpty(correo)
-                ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-                : $"Hello, {correo}. This HTTP triggered function executed successfully.";
-
-            return new OkObjectResult(responseMessage);
+            //paramatremos para conectar con la base
+                string Server = Environment.GetEnvironmentVariable("Server");
+                string UserID = Environment.GetEnvironmentVariable("UserID");
+                string Password = Environment.GetEnvironmentVariable("Password");
+                string DB = Environment.GetEnvironmentVariable("DataBase");
+                //Crear cadena de conexion
+                string conDB = "Server=" + Server + ";UserID=" + UserID + ";Password=" + Password + ";Database=" + DB + ";SslMode=Preferred;";
+                //crear la conexion
+                var conexion = new MySqlConnection(conDB);
+                //abrir conexion
+                conexion.Open();
+            try{
+                    var cmdAltaPaciente = new MySqlCommand();
+                    cmdAltaPaciente.Connection = conexion;
+                    cmdAltaPaciente.CommandText = "UPDATE especialista SET validador=@codigo where correo=@correo";
+                    cmdAltaPaciente.Parameters.AddWithValue("@correo",correo);
+                    cmdAltaPaciente.Parameters.AddWithValue("@validador",codigo);
+                }catch (Exception e){
+                    //throw new Exception(e.Message);
+                    return new BadRequestObjectResult(JsonConvert.SerializeObject(new Error(e.Message +"error global")));
+                }
+                finally{
+                    conexion.Close();
+                }
+            return new OkObjectResult("Correo enviado exitosamente");
         }catch (Exception e){
             Console.WriteLine(e.Message);
             return new BadRequestObjectResult(JsonConvert.SerializeObject(new Error(e.Message +"error global")));
