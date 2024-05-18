@@ -28,8 +28,10 @@ namespace TEAPP
             log.LogInformation("C# HTTP trigger function processed a request.");
 
             string correo = req.Query["correo"];
-            string email=Environment.GetEnvironmentVariable("correo");
-            string password=Environment.GetEnvironmentVariable("passCorreo");
+            string email=Environment.GetEnvironmentVariable("correo")+"";
+            string password=Environment.GetEnvironmentVariable("passCorreo")+"";
+            //string email="teapp.3sc0m@gmail.com";
+            //string password="ycpitfiwtxotdmkh";
             string myAlias="TEApp";
             MailMessage mCorreo;
             mCorreo=new MailMessage();
@@ -102,25 +104,26 @@ namespace TEAPP
             dynamic data = JsonConvert.DeserializeObject(requestBody);
             correo = correo ?? data?.correo;
             //paramatremos para conectar con la base
-                string Server = Environment.GetEnvironmentVariable("Server");
-                string UserID = Environment.GetEnvironmentVariable("UserID");
-                string Password = Environment.GetEnvironmentVariable("Password");
-                string DB = Environment.GetEnvironmentVariable("DataBase");
-                //Crear cadena de conexion
-                string conDB = "Server=" + Server + ";UserID=" + UserID + ";Password=" + Password + ";Database=" + DB + ";SslMode=Preferred;";
-                //crear la conexion
-                var conexion = new MySqlConnection(conDB);
-                //abrir conexion
-                conexion.Open();
+            string Server = Environment.GetEnvironmentVariable("Server");
+            string UserID = Environment.GetEnvironmentVariable("UserID");
+            string Password = Environment.GetEnvironmentVariable("Password");
+            string DB = Environment.GetEnvironmentVariable("DataBase");
+            //Crear cadena de conexion
+            string conDB = "Server=" + Server + ";UserID=" + UserID + ";Password=" + Password + ";Database=" + DB + ";SslMode=Preferred;";
+            //crear la conexion
+            var conexion = new MySqlConnection(conDB);
+            //abrir conexion
+            conexion.Open();
             try{
                     var cmdAltaPaciente = new MySqlCommand();
                     cmdAltaPaciente.Connection = conexion;
                     cmdAltaPaciente.CommandText = "UPDATE especialista SET validador=@codigo where correo=@correo";
                     cmdAltaPaciente.Parameters.AddWithValue("@correo",correo);
-                    cmdAltaPaciente.Parameters.AddWithValue("@validador",codigo);
+                    cmdAltaPaciente.Parameters.AddWithValue("@codigo",codigo);
+                    cmdAltaPaciente.ExecuteNonQuery();
                 }catch (Exception e){
                     //throw new Exception(e.Message);
-                    return new BadRequestObjectResult(JsonConvert.SerializeObject(new Error(e.Message +"error global")));
+                    return new BadRequestObjectResult(JsonConvert.SerializeObject(new Error(e.Message +"error sql")));
                 }
                 finally{
                     conexion.Close();
@@ -128,7 +131,7 @@ namespace TEAPP
             return new OkObjectResult("Correo enviado exitosamente");
         }catch (Exception e){
             Console.WriteLine(e.Message);
-            return new BadRequestObjectResult(JsonConvert.SerializeObject(new Error(e.Message +"error global")));
+            return new BadRequestObjectResult(JsonConvert.SerializeObject(new Error(e.Message +" error global ")));
         }
     }
 }
