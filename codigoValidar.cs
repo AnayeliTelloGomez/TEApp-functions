@@ -121,6 +121,10 @@ namespace TEAPP
                     cmdAltaPaciente.Parameters.AddWithValue("@correo",correo);
                     cmdAltaPaciente.Parameters.AddWithValue("@codigo",codigo);
                     cmdAltaPaciente.ExecuteNonQuery();
+                    cmdAltaPaciente.CommandText = "UPDATE paciente SET validador=@codigo1 where correo=@correo1";
+                    cmdAltaPaciente.Parameters.AddWithValue("@correo1",correo);
+                    cmdAltaPaciente.Parameters.AddWithValue("@codigo1",codigo);
+                    cmdAltaPaciente.ExecuteNonQuery();
                 }catch (Exception e){
                     //throw new Exception(e.Message);
                     return new BadRequestObjectResult(JsonConvert.SerializeObject(new Error(e.Message +"error sql")));
@@ -128,7 +132,7 @@ namespace TEAPP
                 finally{
                     conexion.Close();
                 }
-            return new OkObjectResult("Correo enviado exitosamente");
+            return new OkObjectResult(new { message ="Si existe una cuenta asociada al correo que se proporcionó, se le enviará un código de verificación."});
         }catch (Exception e){
             Console.WriteLine(e.Message);
             return new BadRequestObjectResult(JsonConvert.SerializeObject(new Error(e.Message +" error global ")));
