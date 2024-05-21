@@ -45,9 +45,9 @@ namespace TEAPP
                 //Crear la variable tipo comando en MySQL y asignarle sus caracteristicas
                 var cmdAltaPaciente = new MySqlCommand();
                 cmdAltaPaciente.Connection = conexion;
-                cmdAltaPaciente.CommandText = "UPDATE paciente SET idespecialista=@idEsp where correo=@correo";
+                cmdAltaPaciente.CommandText = "UPDATE paciente SET idespecialista=(SELECT idespecialista FROM Especialista WHERE correo=@idEsp) where correo=@correo";
                 cmdAltaPaciente.Parameters.AddWithValue("@correo", correo);
-                cmdAltaPaciente.Parameters.AddWithValue("@idEsp",int.Parse(idEsp));
+                cmdAltaPaciente.Parameters.AddWithValue("@idEsp",idEsp);
 
                 //executar Query (non porque no devuelve datos)
                 cmdAltaPaciente.ExecuteNonQuery();
