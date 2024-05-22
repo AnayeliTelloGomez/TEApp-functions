@@ -72,8 +72,8 @@ namespace TEAPP
                     cmdAltaPaciente.CommandText = "insert into actividad_asignada (idactividad,paciente,especialista,actividad,emocion,numreactivos) values (0,@idpaciente,@idespecialista,@emocion,@act,@reactivos)";
                     cmdAltaPaciente.Parameters.AddWithValue("@idpaciente",int.Parse(data.idpaciente));
                     cmdAltaPaciente.Parameters.AddWithValue("@idespecialista", int.Parse(data.idespecialista));
-                    cmdAltaPaciente.Parameters.AddWithValue("@emocion", data.emocion);
-                    cmdAltaPaciente.Parameters.AddWithValue("@act", data.act);
+                    cmdAltaPaciente.Parameters.AddWithValue("@emocion", data.act);
+                    cmdAltaPaciente.Parameters.AddWithValue("@act", data.emocion);
                     cmdAltaPaciente.Parameters.AddWithValue("@reactivos", int.Parse(data.reactivos));
                     
 
