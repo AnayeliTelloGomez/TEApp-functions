@@ -62,7 +62,7 @@ namespace TEAPP
                         using (MySqlDataReader reader= cmdPacientes.ExecuteReader()){
                             while (reader.Read()){
                                 var paciente = new PacienteConsulta{
-                                    idepaciente=reader.GetInt32(reader.GetOrdinal("idpaciente")),
+                                    idpaciente=reader.GetInt32(reader.GetOrdinal("idpaciente")),
                                     correo=reader["correo"].ToString(),
                                     nombres=reader["nombres"].ToString(),
                                     paterno=reader["paterno"].ToString(),
