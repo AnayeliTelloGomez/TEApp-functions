@@ -17,6 +17,7 @@ namespace TEAPP
     public static class pacientesAsignados
     {
         class PacienteConsulta{
+            public int idpaciente;
             public string correo;
             public string nombres;
             public string paterno;
@@ -55,12 +56,13 @@ namespace TEAPP
             try{
                     using(conexion){
                         conexion.Open();
-                        string query = "select correo, nombres, paterno, materno, idespecialista from paciente where idespecialista = (SELECT idespecialista FROM Especialista WHERE correo=@idEsp);";
+                        string query = "select idpaciente,correo, nombres, paterno, materno, idespecialista from paciente where idespecialista = (SELECT idespecialista FROM Especialista WHERE correo=@idEsp);";
                         MySqlCommand cmdPacientes= new MySqlCommand(query,conexion);
                         cmdPacientes.Parameters.AddWithValue("@idEsp", idEsp);
                         using (MySqlDataReader reader= cmdPacientes.ExecuteReader()){
                             while (reader.Read()){
                                 var paciente = new PacienteConsulta{
+                                    idepaciente=reader.GetInt32(reader.GetOrdinal("idpaciente")),
                                     correo=reader["correo"].ToString(),
                                     nombres=reader["nombres"].ToString(),
                                     paterno=reader["paterno"].ToString(),
