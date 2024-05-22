@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 using MySql.Data.MySqlClient;
+using Google.Protobuf.Reflection;
 
 namespace TEAPP
 {
@@ -80,7 +81,7 @@ namespace TEAPP
                     cmdAltaPaciente.ExecuteNonQuery();
 
                     transaccion.Commit();
-                    return new OkObjectResult("Actividad registrada correctamente.");
+                    return new OkObjectResult(new {message="Actividad registrada correctamente."});
 
                 }
                 catch (Exception e)
