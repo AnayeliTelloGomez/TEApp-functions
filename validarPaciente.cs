@@ -18,6 +18,7 @@ namespace TEAPP
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
+            try{
            log.LogInformation("C# HTTP trigger function processed a request.");
 
             string correo = req.Query["correo"];
@@ -40,7 +41,7 @@ namespace TEAPP
             var conexion = new MySqlConnection(conDB);
             //abrir conexion
             conexion.Open();
-
+            
             try{
                 //Crear la variable tipo comando en MySQL y asignarle sus caracteristicas
                 var cmdAltaPaciente = new MySqlCommand();
@@ -59,6 +60,10 @@ namespace TEAPP
                 return new BadRequestObjectResult(JsonConvert.SerializeObject(new Error(e.Message)));
             }finally{
                 conexion.Close();
+            }
+            }catch (Exception e){
+                Console.WriteLine(e.Message);
+                return new BadRequestObjectResult(JsonConvert.SerializeObject(new Error(e.Message)));
             }
         }
     }
