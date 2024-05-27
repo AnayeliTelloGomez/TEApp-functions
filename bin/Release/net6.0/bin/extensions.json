@@ -1,0 +1,5 @@
+{
+  "extensions":[
+    { "name": "FunctionsAuthorizeStartup", "typeName":"DarkLoop.Azure.Functions.Authorization.FunctionsAuthorizeStartup, DarkLoop.Azure.Functions.Authorization.InProcess, Version=4.0.0.0, Culture=neutral, PublicKeyToken=886e4a4408fddf6a"}
+  ]
+}
