@@ -110,7 +110,7 @@ namespace TEAPP
                         return new OkObjectResult(new { message=GenerateJwtToken(usuario.correo,usuario.tipo)});
                     }else{
                         //transaccion.Commit();
-                        return new BadRequestObjectResult(JsonConvert.SerializeObject(new Error("Credenciales erroneas. correo"+usuario.correo+usuario.contrasena)));
+                        return new BadRequestObjectResult(JsonConvert.SerializeObject(new Error("Credenciales erroneas. correo"+usuario.tipo+"")));
                     }
                 }catch (Exception e){
                     //transaccion.Rollback();
