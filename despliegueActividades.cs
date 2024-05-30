@@ -17,6 +17,7 @@ namespace TEAPP
     public static class despliegueActividades
     {
         class actividad{
+            public string idpaciente;
             public string idact;
             public string act;
             public string emocion;
@@ -50,13 +51,14 @@ namespace TEAPP
             try{
                     using(conexion){
                         conexion.Open();
-                        string query = "select idactividad, actividad, emocion, numreactivos from actividad_asignada where paciente=(select idpaciente from paciente where correo=@correo) and realizada=0;";
+                        string query = "select paciente,idactividad, actividad, emocion, numreactivos from actividad_asignada where paciente=(select idpaciente from paciente where correo=@correo) and realizada=0;";
                         MySqlCommand cmdPacientes= new MySqlCommand(query,conexion);
                         cmdPacientes.Parameters.AddWithValue("@correo", correo);
 
                         using (MySqlDataReader reader= cmdPacientes.ExecuteReader()){
                             while (reader.Read()){
                                 var actividad = new actividad{
+                                    idpaciente = Convert.ToInt32(reader["paciente"]).ToString(),
                                     idact = Convert.ToInt32(reader["idactividad"]).ToString(),
                                     act=reader["actividad"].ToString(),
                                     emocion=reader["emocion"].ToString(),
