@@ -23,6 +23,7 @@ namespace TEAPP
         }
 
         class estadistica{
+            public string idactividad;
             public string correctas;
             public string incorrectas;
             public string tiempo; 
@@ -57,7 +58,7 @@ namespace TEAPP
             try{
                     using(conexion){
                         conexion.Open();
-                        string query = "select correctas,incorrectas, tiempo from actividad_asignada where paciente=@idpac and actividad=@act and emocion=@emocion and numreactivos=@reactivos and realizada=1;";
+                        string query = "select idactividad,correctas,incorrectas, tiempo from actividad_asignada where paciente=@idpac and actividad=@act and emocion=@emocion and numreactivos=@reactivos and realizada=1;";
                         MySqlCommand cmdActividad= new MySqlCommand(query,conexion);
                         cmdActividad.Parameters.AddWithValue("@idpac",int.Parse(data.idpaciente));
                         cmdActividad.Parameters.AddWithValue("@act",data.act);
@@ -67,9 +68,10 @@ namespace TEAPP
                         using (MySqlDataReader reader= cmdActividad.ExecuteReader()){
                             while (reader.Read()){
                                 var estadistica = new estadistica{
+                                    idactividad = Convert.ToInt32(reader["idactividad"]).ToString(),
                                     correctas = Convert.ToInt32(reader["correctas"]).ToString(),
                                     incorrectas = Convert.ToInt32(reader["incorrectas"]).ToString(),
-                                    tiempo = Convert.ToSingle(reader["incorrectas"]).ToString()
+                                    tiempo = Convert.ToDouble(reader["tiempo"]).ToString()
                                 };
                                 estadisticas.Add(estadistica);
                             }
