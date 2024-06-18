@@ -82,38 +82,23 @@ namespace TEAPP
                         cmdInicio.Parameters.AddWithValue("@contrasena", hashedPassword);
                         resultado = cmdInicio.ExecuteScalar();
                     }
-                    else{
+                    else if(usuario.tipo.Equals("1")){
                         cmdInicio.CommandText = "select * from especialista where correo=@correo and contrasena=@contrasena";
+                        cmdInicio.Parameters.AddWithValue("@correo", usuario.correo);
+                        cmdInicio.Parameters.AddWithValue("@contrasena", hashedPassword);
+                        resultado = cmdInicio.ExecuteScalar();
+                    }else{
+                        cmdInicio.CommandText = "select * from administrador where correo=@correo and contrasena=@contrasena";
                         cmdInicio.Parameters.AddWithValue("@correo", usuario.correo);
                         cmdInicio.Parameters.AddWithValue("@contrasena", hashedPassword);
                         resultado = cmdInicio.ExecuteScalar();
                     }
                     if (resultado != null && Convert.ToInt32(resultado) > 0){
-                        //transaccion.Commit();
-                        //creacion del token
-                        
-                        /*var claims = new[]{
-                            new Claim(ClaimTypes.Email, usuario.correo),
-                            new Claim(ClaimTypes.Role, usuario.tipo)
-                        };
-
-                        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("salt")));
-                        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-                        var token = new JwtSecurityToken(
-                            claims: claims,
-                            expires: DateTime.Now.AddMinutes(30),
-                            signingCredentials: creds
-                        );
-
-                        return new JwtSecurityTokenHandler().WriteToken(token);*/
                         return new OkObjectResult(new { message=GenerateJwtToken(usuario.correo,usuario.tipo)});
                     }else{
-                        //transaccion.Commit();
                         return new BadRequestObjectResult(JsonConvert.SerializeObject(new Error("Credenciales erroneas. correo"+usuario.tipo+"")));
                     }
                 }catch (Exception e){
-                    //transaccion.Rollback();
                     throw new Exception(e.Message);
                 }
                 finally{

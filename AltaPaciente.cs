@@ -112,7 +112,7 @@ namespace TEAPP
                     cmdAltaPaciente.ExecuteNonQuery();
 
                     transaccion.Commit();
-                    return new OkObjectResult("Usuario registrado correctamente."+paciente.correo+paciente.nombres+paciente.contrasena);
+                    return new OkObjectResult("Usuario registrado correctamente.");
 
                 }
                 catch (Exception e)
