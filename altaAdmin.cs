@@ -98,7 +98,7 @@ namespace TEAPP
                     cmdAltaPaciente.ExecuteNonQuery();
 
                     transaccion.Commit();
-                    return new OkObjectResult("Usuario registrado correctamente.");
+                    return new OkObjectResult(new { message ="Admin registrado correctamente."});
 
                 }
                 catch (Exception e)

@@ -16,7 +16,8 @@ namespace TEAPP
 {
     public static class desplieguePaciente
     {
-
+        /*Esta clase se utiliza para serializar el objeto
+         y mandarlo como json si la función se realizó correctamente */
         class PacienteConsulta{
             public string correo;
             public string nombres;
@@ -24,6 +25,7 @@ namespace TEAPP
             public string materno;
             public int idespecialista;
         }
+        //nombre con el cual se llama a la AZ Function
         [FunctionName("desplieguePaciente")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
@@ -35,19 +37,22 @@ namespace TEAPP
             string Password = Environment.GetEnvironmentVariable("Password");
             string DB = Environment.GetEnvironmentVariable("DataBase");
             //Crear cadena de conexion
-            string conDB = "Server=" + Server + ";UserID=" + UserID + ";Password=" + Password + ";Database=" + DB + ";SslMode=Preferred;";
+            string conDB = "Server=" + Server + ";UserID=" + UserID + ";Password=" + Password + 
+                            ";Database=" + DB + ";SslMode=Preferred;";
             List<PacienteConsulta> pacientes=new List<PacienteConsulta>();
             //crear la conexion
-            //var conexion = new MySqlConnection(conDB);
-            //abrir conexion
-            //conexion.Open();
             MySqlConnection conexion= new MySqlConnection(conDB);
             try{
                     using(conexion){
                         conexion.Open();
-                        string query = "select correo, nombres, paterno, materno, idespecialista from paciente order by idespecialista ASC;";
+                        //Comando para consulta
+                        string query = "select correo, nombres, paterno, materno, idespecialista"+
+                                        "from paciente order by idespecialista ASC;";
+                        //ejecución de comando
                         MySqlCommand cmdPacientes= new MySqlCommand(query,conexion);
-
+                        
+                        /*se lee la consulta y se crea un objeto tipo paciente que
+                         posteriormente se agrega auna lista de pacientes*/
                         using (MySqlDataReader reader= cmdPacientes.ExecuteReader()){
                             while (reader.Read()){
                                 var paciente = new PacienteConsulta{
@@ -61,8 +66,8 @@ namespace TEAPP
                             }
                         }       
                     }
+                    /*se convierte la lista de pacientes a un json para enviarlo como resultado de la función*/
                     string jsonPacientes = JsonConvert.SerializeObject(pacientes, Formatting.Indented);
-                    //Console.WriteLine(jsonPacientes);
                     return new OkObjectResult(jsonPacientes);
                     
             }catch (Exception e){
