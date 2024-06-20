@@ -46,8 +46,7 @@ namespace TEAPP
                     using(conexion){
                         conexion.Open();
                         //Comando para consulta
-                        string query = "select correo, nombres, paterno, materno, idespecialista"+
-                                        "from paciente order by idespecialista ASC;";
+                        string query = "select correo, nombres, paterno, materno, idespecialista from paciente order by idespecialista ASC;";
                         //ejecución de comando
                         MySqlCommand cmdPacientes= new MySqlCommand(query,conexion);
                         
