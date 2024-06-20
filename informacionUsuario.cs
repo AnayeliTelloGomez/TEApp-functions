@@ -58,8 +58,10 @@ namespace TEApp
                             string query="";
                             if(tipo.Equals("2")){
                                 query = "select correo, nombres, paterno, materno from paciente where correo=@correo";
-                            }else{
+                            }else if(tipo.Equals("1")){
                                 query = "select correo, nombres, paterno, materno from especialista where correo=@correo";
+                            }else{
+                                query = "select correo, nombres, paterno, materno from administrador where correo=@correo";
                             }
                             MySqlCommand cmdPacientes= new MySqlCommand(query,conexion);
 
