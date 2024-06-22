@@ -76,6 +76,7 @@ namespace TEAPP
                     cmdInicio.Connection = conexion;
                     //cmdInicio.Transaction = transaccion;
                     object resultado = new object();
+                    
                     if (usuario.tipo.Equals("2")){
                         cmdInicio.CommandText = "select * from paciente where correo=@correo and contrasena=@contrasena";
                         cmdInicio.Parameters.AddWithValue("@correo", usuario.correo);
