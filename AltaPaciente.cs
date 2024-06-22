@@ -89,6 +89,26 @@ namespace TEAPP
                     var cmdAltaPaciente = new MySqlCommand();
                     cmdAltaPaciente.Connection = conexion;
                     cmdAltaPaciente.Transaction = transaccion;
+
+                    object resultado = new object();
+                    var cmdInicio = new MySqlCommand();
+                    cmdInicio.Connection = conexion;
+
+                    if (paciente.tipo.Equals("2")){
+                        cmdInicio.CommandText = "select * from paciente where correo=@correo";
+                        cmdInicio.Parameters.AddWithValue("@correo", paciente.correo);
+                        resultado = cmdInicio.ExecuteScalar();
+                    }
+                    else if(paciente.tipo.Equals("1")){
+                        cmdInicio.CommandText = "select * from especialista where correo=@correo";
+                        cmdInicio.Parameters.AddWithValue("@correo", paciente.correo);
+                        resultado = cmdInicio.ExecuteScalar();
+                    }
+
+                    if (resultado != null && Convert.ToInt32(resultado) > 0){
+                        return new BadRequestObjectResult(JsonConvert.SerializeObject(new Error("Ya hay un usuario con ese correo electrónico.")));
+                    }
+
                     if (paciente.tipo.Equals("2"))
                     {
                         cmdAltaPaciente.CommandText = "insert into paciente (idpaciente,correo,contrasena,nombres,paterno,materno,idespecialista) values (0,@correo,@contrasena,@nombres,@paterno,@materno,1)";

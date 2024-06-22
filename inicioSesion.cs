@@ -75,6 +75,7 @@ namespace TEAPP
                     var cmdInicio = new MySqlCommand();
                     cmdInicio.Connection = conexion;
                     //cmdInicio.Transaction = transaccion;
+                    
                     object resultado = new object();
                     
                     if (usuario.tipo.Equals("2")){
