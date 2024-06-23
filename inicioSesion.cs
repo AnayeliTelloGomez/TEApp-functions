@@ -96,7 +96,7 @@ namespace TEAPP
                             }
                         }
                         if (validado == 1){
-                            return new BadRequestObjectResult(JsonConvert.SerializeObject(new Error("Pida a su responsable que lo valide.")));
+                            return new BadRequestObjectResult(JsonConvert.SerializeObject(new Error("Si desea iniciar sesión, pida a su responsable que lo valide.")));
                         }
                     }else{
                         cmdInicio.CommandText = "select * from administrador where correo=@correo and contrasena=@contrasena";
@@ -107,7 +107,7 @@ namespace TEAPP
                     if (resultado != null && Convert.ToInt32(resultado) > 0){
                         return new OkObjectResult(new { message=GenerateJwtToken(usuario.correo,usuario.tipo)});
                     }else{
-                        return new BadRequestObjectResult(JsonConvert.SerializeObject(new Error("Credenciales erroneas. correo"+usuario.tipo+"")));
+                        return new BadRequestObjectResult(JsonConvert.SerializeObject(new Error("Credenciales erroneas.")));
                     }
                 }catch (Exception e){
                     throw new Exception(e.Message);

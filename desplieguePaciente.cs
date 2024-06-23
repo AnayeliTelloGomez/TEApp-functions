@@ -30,7 +30,9 @@ namespace TEAPP
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
-        {
+        {   try
+            {
+            string correo = req.Query["correo"];
             //paramatremos para conectar con la base
             string Server = Environment.GetEnvironmentVariable("Server");
             string UserID = Environment.GetEnvironmentVariable("UserID");
@@ -46,12 +48,13 @@ namespace TEAPP
                     using(conexion){
                         conexion.Open();
                         //Comando para consulta
-                        string query = "select correo, nombres, paterno, materno, idespecialista from paciente order by idespecialista ASC;";
+                        string query = "select correo, nombres, paterno, materno, idespecialista from paciente where idespecialista=(SELECT idespecialista FROM Especialista WHERE correo=@correo) or idespecialista=1 order by idespecialista ASC;";
                         //ejecución de comando
                         MySqlCommand cmdPacientes= new MySqlCommand(query,conexion);
+                        cmdPacientes.Parameters.AddWithValue("@correo", correo);
                         
                         /*se lee la consulta y se crea un objeto tipo paciente que
-                         posteriormente se agrega auna lista de pacientes*/
+                        posteriormente se agrega auna lista de pacientes*/
                         using (MySqlDataReader reader= cmdPacientes.ExecuteReader()){
                             while (reader.Read()){
                                 var paciente = new PacienteConsulta{
@@ -74,6 +77,10 @@ namespace TEAPP
             }
             finally{
                 conexion.Close();
+            }
+            }catch(Exception e){
+                Console.WriteLine(e.Message);
+                return new BadRequestObjectResult(JsonConvert.SerializeObject(new Error(e.Message)));
             }
         }
     }
