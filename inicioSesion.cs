@@ -117,7 +117,7 @@ namespace TEAPP
                 }
             }catch (Exception e){
                 Console.WriteLine(e.Message);
-                return new BadRequestObjectResult(JsonConvert.SerializeObject(new Error(e.Message +"error global")));
+                return new BadRequestObjectResult(JsonConvert.SerializeObject(new Error(e.Message)));
             }
                 
 

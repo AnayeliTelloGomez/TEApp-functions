@@ -81,7 +81,7 @@ namespace TEAPP
                         <h1>Código de verificación</h1>
                         <p>Estimado usuario,</p>
                         <p>Su código de validación es:</p>
-                        <div class='code'>TEApp-"+codigo+@"</div>
+                        <div class='code'>"+codigo+@"</div>
                         <p>Utilice este código para validar su identidad.</p>
                         <p>Gracias,<br/>Equipo de TEApp</p>
                     </div>
