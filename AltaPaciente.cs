@@ -60,12 +60,12 @@ namespace TEAPP
                 if (data == null) throw new Exception("No se pudo deserializar la solicitud.");
                 log.LogInformation("nombre: ", paciente.nombres);
                 //Verificar los parametros
-                if (paciente.nombres == null || paciente.nombres == "") throw new Exception("Se debe ingresar al menos un nombre.");
+                /*if (paciente.nombres == null || paciente.nombres == "") throw new Exception("Se debe ingresar al menos un nombre.");
                 if (paciente.paterno == null || paciente.paterno == "") throw new Exception("Se debe ingresar el apellido paterno");
                 if (paciente.materno == null || paciente.materno == "") throw new Exception("Se debe ingresar el apellido materno");
                 if (paciente.correo == null || paciente.correo == "") throw new Exception("Se debe ingresar un correo electrónico");
                 if (paciente.contrasena == null || paciente.contrasena == "") throw new Exception("Se debe ingresar el apelliuna contraseña");
-
+*/
                 string hashedPassword = encode(paciente.contrasena);
                 //leer los parametros para establecer conexión
                 string Server = Environment.GetEnvironmentVariable("Server");
@@ -132,7 +132,7 @@ namespace TEAPP
                     cmdAltaPaciente.ExecuteNonQuery();
 
                     transaccion.Commit();
-                    return new OkObjectResult("Usuario registrado correctamente.");
+                    return new OkObjectResult(new {message="Usuario registrado correctamente."});
 
                 }
                 catch (Exception e)

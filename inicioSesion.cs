@@ -89,6 +89,15 @@ namespace TEAPP
                         cmdInicio.Parameters.AddWithValue("@correo", usuario.correo);
                         cmdInicio.Parameters.AddWithValue("@contrasena", hashedPassword);
                         resultado = cmdInicio.ExecuteScalar();
+                        int validado=0;
+                        using (MySqlDataReader reader= cmdInicio.ExecuteReader()){
+                            while (reader.Read()){
+                                validado=reader.GetInt32(reader.GetOrdinal("idadministrador"));
+                            }
+                        }
+                        if (validado == 1){
+                            return new BadRequestObjectResult(JsonConvert.SerializeObject(new Error("Pida a su responsable que lo valide.")));
+                        }
                     }else{
                         cmdInicio.CommandText = "select * from administrador where correo=@correo and contrasena=@contrasena";
                         cmdInicio.Parameters.AddWithValue("@correo", usuario.correo);
